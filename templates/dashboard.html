@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<h3>Total Products: {{ total }}</h3>
+
+<table border="1" cellpadding="10" style="margin:auto; background:white;">
+    <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Description</th>
+    </tr>
+
+    {% for item in products %}
+    <tr>
+        <td>
+            <img src="{{ url_for('static', filename='images/' + item.image) }}" width="80">
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.price }}</td>
+        <td>{{ item.description }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

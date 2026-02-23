@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Store</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/product">Products</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+</nav>
+
+<header class="hero">
+    <h1>Welcome to Our Store</h1>
+    <p>Discover amazing products at unbeatable prices!</p>
+    <a href="/product" class="buy-btn">Shop Now</a>
+</header>
+
+<section class="featured-products">
+    <h2>Featured Products</h2>
+
+    <div class="products">
+        {% for item in products[:3] %}
+        <div class="card">
+            <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ item.price }}</p>
+            <a href="{{ item.link or '#' }}" class="buy-btn">Buy Now</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+</body>
+</html>
