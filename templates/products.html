@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Our Products — VoltStore{% endblock %}
+
+{% block content %}
+
+    <!-- Product Section -->
+    <section class="section">
+        <h1>Our <span class="accent">Products</span></h1>
+
+        {% if products %}
+        <div class="product-grid">
+            {% for item in products %}
+            <div class="product-card">
+
+                <!-- Product Image & Info -->
+                <a href="{{ url_for('product_page', product_id=item.id) }}" class="product-img-link">
+                    <img src="{{ url_for('static', filename='images/' + item.image) }}"
+                         alt="{{ item.name }}">
+                    <div class="product-overlay">Quick View</div>
+                </a>
+                <div class="product-info">
+                    <h3>{{ item.name }}</h3>
+                    <p class="product-desc">{{ item.description }}</p>
+                    <div class="product-footer">
+                        <p class="price">FCFA {{ "{:,}".format(item.price_fcfa) }}</p>
+                        <a href="{{ url_for('product_page', product_id=item.id) }}" class="add-btn">View Details</a>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <p>No products available yet.</p>
+        </div>
+        {% endif %}
+    </section>
+
+{% endblock %}

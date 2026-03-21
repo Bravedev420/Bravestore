@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Checkout — VoltStore{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <h1>Check<span class="accent">out</span></h1>
+</section>
+
+<section class="section">
+    <div class="checkout-layout">
+
+        <!-- Order Summary -->
+        <div class="checkout-summary">
+            <h2>Order Summary</h2>
+            {% for item in cart_items %}
+            <div class="checkout-item">
+                <img src="{{ url_for('static', filename='images/' ~ item.image) }}" 
+                     alt="{{ item.name }}">
+                <div>
+                    <strong>{{ item.name }}</strong>
+                    <p>Qty: {{ item.quantity }} × {{ "{:,}".format(item.price_fcfa) }} FCFA</p>
+                </div>
+                <span>{{ "{:,}".format(item.subtotal) }} FCFA</span>
+            </div>
+            {% endfor %}
+            <div class="checkout-total">
+                <strong>Total</strong>
+                <strong class="accent">{{ "{:,}".format(total) }} FCFA</strong>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="checkout-form-wrap">
+            <h2>Your Details</h2>
+            <form method="POST" class="checkout-form">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" required placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required placeholder="john@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required placeholder="+237 6XX XXX XXX">
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select name="payment_method" required>
+                        <option value="">Select payment</option>
+                        <option value="mtn">📱 MTN Mobile Money</option>
+                        <option value="orange">🟠 Orange Money</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary full-width">
+                    Pay {{ "{:,}".format(total) }} FCFA →
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

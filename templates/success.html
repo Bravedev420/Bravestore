@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed — VoltStore{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-card" style="text-align:center;">
+
+        <div class="success-icon">✅</div>
+
+        <h2>Order Confirmed!</h2>
+        <p>Thank you, <strong class="accent">{{ name }}</strong>! Your order has been placed successfully.</p>
+        <p style="margin: 10px 0 24px;">
+            Total paid: <strong class="accent">{{ "{:,}".format(total) }} FCFA</strong>
+        </p>
+
+        <a href="{{ url_for('home') }}" class="btn-primary">Back to Home</a>
+
+    </div>
+</section>
+
+{% endblock %}

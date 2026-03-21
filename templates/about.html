@@ -1,18 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About Us</title>
-</head>
-<body>
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/products">Products</a> |
-        <a href="/about">About</a> |
-        <a href="/contact">Contact</a>
-    </nav>
-    <hr>
+{% extends "base.html" %}
+{% block title %}About Us — VoltStore{% endblock %}
 
-    <h1>About Us</h1>
-    <p>We sell high quality tech gadgets including wireless headphones, smart watches, and Bluetooth speakers.</p>
-</body>
-</html>
+{% block content %}
+
+<section class="page-hero">
+    <h1>About <span class="accent">VoltStore</span></h1>
+    <p>We power life with the best electronics ⚡</p>
+</section>
+
+<section class="section">
+    <div class="about-layout">
+
+        <!-- About Text -->
+        <div class="about-text">
+            <h2>Our <span class="accent">Story</span></h2>
+            <p>VoltStore was born from a simple idea — everyone deserves access to great electronics at fair prices. Based in Cameroon, we source the best products and bring them directly to you.</p>
+            <p>We believe technology should empower people. Whether you're upgrading your home, your workspace, or your lifestyle, VoltStore has you covered.</p>
+            <p>We accept MTN Mobile Money and Orange Money — because we're built for you.</p>
+        </div>
+
+        <!-- Values -->
+        <div class="about-values">
+            <div class="value-card">
+                <span class="value-icon">⚡</span>
+                <div>
+                    <h3>Speed</h3>
+                    <p>Fast delivery, fast support, fast checkout.</p>
+                </div>
+            </div>
+            <div class="value-card">
+                <span class="value-icon">🎯</span>
+                <div>
+                    <h3>Quality</h3>
+                    <p>Only products we'd use ourselves.</p>
+                </div>
+            </div>
+            <div class="value-card">
+                <span class="value-icon">🤝</span>
+                <div>
+                    <h3>Trust</h3>
+                    <p>Transparent pricing. No hidden fees.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

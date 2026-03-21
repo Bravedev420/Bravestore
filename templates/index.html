@@ -1,41 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Our Store</title>
+{% extends "base.html" %}
+{% block title %}VoltStore — Premium Electronics{% endblock %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block content %}
 
-<nav>
-    <a href="/">Home</a>
-    <a href="/product">Products</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-</nav>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to <span class="accent">BraveStore</span></h1>
+        <p class="hero-sub">Find the best electronics at great prices.</p>
+        <a href="{{ url_for('products') }}" class="btn-primary">Shop Now →</a>
+    </div>
+    <div class="hero-graphic">
+        <div class="hero-blob"></div>
+        <div class="hero-icon-ring">⚡</div>
+    </div>
+</section>
 
-<header class="hero">
-    <h1>Welcome to Our Store</h1>
-    <p>Discover amazing products at unbeatable prices!</p>
-    <a href="/product" class="buy-btn">Shop Now</a>
-</header>
+<!-- Featured Products -->
+<section class="section">
+    <div class="section-header">
+        <h2>Featured <span class="accent">Products</span></h2>
+        <a href="{{ url_for('products') }}" class="see-all">See All →</a>
+    </div>
 
-<section class="featured-products">
-    <h2>Featured Products</h2>
-
-    <div class="products">
-        {% for item in products[:3] %}
-        <div class="card">
-            <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
-            <h3>{{ item.name }}</h3>
-            <p class="price">{{ item.price }}</p>
-            <a href="{{ item.link or '#' }}" class="buy-btn">Buy Now</a>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <a href="{{ url_for('product_page', product_id=product.id) }}" class="product-img-link">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+                <div class="product-overlay">Quick View</div>
+            </a>
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p class="product-desc">{{ product.description }}</p>
+                <div class="product-footer">
+                    <span class="price">{{ "{:,}".format(product.price_fcfa) }} FCFA</span>
+                    <a href="{{ url_for('product_page', product_id=product.id) }}" class="add-btn">Buy Now</a>
+                </div>
+            </div>
         </div>
         {% endfor %}
     </div>
 </section>
 
-</body>
-</html>
+{% endblock %}

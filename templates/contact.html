@@ -1,30 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Contact Us</title>
-</head>
-<body>
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/products">Products</a> |
-        <a href="/about">About</a> |
-        <a href="/contact">Contact</a>
-    </nav>
-    <hr>
+{% extends "base.html" %}
+{% block title %}Contact Us — VoltStore{% endblock %}
 
-    <h1>Contact Us</h1>
+{% block content %}
 
-    <form>
-        <label>Name:</label><br>
-        <input type="text" name="name"><br><br>
+<section class="page-hero">
+    <h1>Get in <span class="accent">Touch</span></h1>
+    <p>We'd love to hear from you</p>
+</section>
 
-        <label>Email:</label><br>
-        <input type="email" name="email"><br><br>
+<section class="section">
+    <div class="contact-layout">
 
-        <label>Message:</label><br>
-        <textarea name="message"></textarea><br><br>
+        <!-- Contact Info -->
+        <div class="contact-info">
+            <h2>Contact <span class="accent">Info</span></h2>
 
-        <button type="submit">Send</button>
-    </form>
-</body>
-</html>
+            <div class="contact-item">
+                <span class="contact-icon">📍</span>
+                <div>
+                    <strong>Location</strong>
+                    <p>Yaoundé, Cameroon</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <span class="contact-icon">📱</span>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+237 6XX XXX XXX</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <span class="contact-icon">✉️</span>
+                <div>
+                    <strong>Email</strong>
+                    <p>hello@voltstore.cm</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <span class="contact-icon">⏰</span>
+                <div>
+                    <strong>Hours</strong>
+                    <p>Mon–Sat, 8am – 6pm</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <form method="POST" class="contact-form">
+
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required placeholder="john@email.com">
+            </div>
+
+            <div class="form-group">
+                <label>Message</label>
+                <textarea name="message" required placeholder="How can we help you?" rows="5"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary full-width">Send Message ✉️</button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

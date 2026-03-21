@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ item.name }} — VoltStore{% endblock %}
+
+{% block content %}
+
+<!-- Product Detail -->
+<div class="section">
+    <div class="product-detail">
+
+        <!-- Product Image -->
+        <div class="detail-img">
+            <img src="{{ url_for('static', filename='images/' + item.image) }}" 
+                 alt="{{ item.name }}">
+        </div>
+
+        <!-- Product Details -->
+        <div class="detail-info">
+            <div class="detail-tag">✔ In Stock</div>
+            <h1>{{ item.name }}</h1>
+
+            <div class="detail-price">
+                <span class="price-fcfa">{{ "{:,}".format(item.price_fcfa) }} FCFA</span>
+                <span class="price-usd">${{ "%.2f"|format(item.price) }}</span>
+            </div>
+
+            <p class="detail-desc">{{ item.description }}</p>
+
+            <div class="detail-actions">
+                <!-- Add to Cart -->
+                <a class="btn-primary" href="{{ url_for('add_to_cart', product_id=item.id) }}">🛒 Add to Cart</a>
+                <!-- Back to products -->
+                <a class="btn-ghost" href="{{ url_for('products') }}">← Back</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

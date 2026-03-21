@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — VoltStore{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <h1>Admin <span class="accent">Dashboard</span></h1>
+    <p>Manage your store</p>
+</section>
+
+<section class="section">
+
+    <!-- STATS CARDS -->
+    <div class="admin-stats">
+        <div class="admin-stat-card">
+            <div class="stat-icon">📦</div>
+            <div>
+                <div class="stat-big">{{ products|length }}</div>
+                <div class="stat-lbl">Products</div>
+            </div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="stat-icon">🧾</div>
+            <div>
+                <div class="stat-big">{{ orders|length }}</div>
+                <div class="stat-lbl">Orders</div>
+            </div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="stat-icon">👥</div>
+            <div>
+                <div class="stat-big">{{ users|length }}</div>
+                <div class="stat-lbl">Users</div>
+            </div>
+        </div>
+        <div class="admin-stat-card accent-card">
+            <div class="stat-icon">💰</div>
+            <div>
+                <div class="stat-big">{{ "{:,}".format(total_revenue) }}</div>
+                <div class="stat-lbl">Revenue (FCFA)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div class="admin-section">
+        <h2>➕ Add New Product</h2>
+        <form method="POST" action="{{ url_for('add_product') }}" class="admin-form">
+            <div class="admin-form-row">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" required placeholder="Product name">
+                </div>
+                <div class="form-group">
+                    <label>Price (USD)</label>
+                    <input type="number" name="price" step="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Image filename</label>
+                    <input type="text" name="image" required placeholder="product.jpg">
+                </div>
+                <div class="form-group" style="flex:2">
+                    <label>Description</label>
+                    <input type="text" name="description" required placeholder="Short description">
+                </div>
+                <div class="form-group" style="align-self:flex-end">
+                    <button type="submit" class="btn-primary">Add Product</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- PRODUCTS TABLE -->
+    <div class="admin-section">
+        <h2>📦 Products</h2>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price (USD)</th>
+                        <th>Price (FCFA)</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in products %}
+                    <tr>
+                        <td><img src="{{ url_for('static', filename='images/' + item.image) }}" width="60" height="50" style="object-fit:cover;border-radius:6px;"></td>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td>${{ "%.2f"|format(item.price) }}</td>
+                        <td>{{ "{:,}".format((item.price * 510)|int) }} FCFA</td>
+                        <td>{{ item.description }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('delete_product', product_id=item.id) }}" onsubmit="return confirm('Delete this product?')">
+                                <button type="submit" class="btn-danger-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<!-- RECENT ACTIVITY -->
+<div class="admin-section">
+    <h2>🕐 Recent Activity</h2>
+    <div class="admin-stats">
+
+        <!-- Recent Orders -->
+        <div class="admin-stat-card" style="flex-direction:column;align-items:flex-start;">
+            <h3>🧾 Recent Orders</h3>
+            {% for order in recent_orders %}
+            <div>
+                <strong>{{ order.customer_name }}</strong> —
+                {{ "{:,}".format(order.total_price|int) }} FCFA
+                <small>({{ order.created_at[:10] }})</small>
+            </div>
+            {% else %}
+            <p>No orders yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Messages -->
+
+        <div class="admin-stat-card" style="flex-direction:column;align-items:flex-start;">
+            <h3>✉️ Recent Messages</h3>
+            {% for msg in recent_messages %}
+            <div>
+                <strong>{{ msg.name }}</strong> — {{ msg.message[:40] }}...
+                <small>({{ msg.created_at[:10] }})</small>
+            </div>
+            {% else %}
+            <p>No messages yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Signups -->
+        <div class="admin-stat-card" style="flex-direction:column;align-items:flex-start;">
+            <h3>👤 Recent Signups</h3>
+            {% for user in recent_signups %}
+            <div>
+                <strong>{{ user.username }}</strong> — {{ user.email }}
+            </div>
+            {% else %}
+            <p>No signups yet.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+    <!-- ORDERS TABLE -->
+    <div class="admin-section">
+        <h2>🧾 Recent Orders</h2>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><strong>{{ order.customer_name }}</strong></td>
+                        <td>{{ order.email }}</td>
+                        <td>{{ order.phone }}</td>
+                        <td class="accent">{{ "{:,}".format(order.amount|int) }} FCFA</td>
+                        <td>
+                            {% if order.payment_method == 'mtn' %}📱 MTN
+                            {% elif order.payment_method == 'orange' %}🟠 Orange
+                            {% else %}{{ order.payment_method }}{% endif %}
+                        </td>
+                        <td>{{ order.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not orders %}
+                    <tr><td colspan="7" style="text-align:center;opacity:.5;">No orders yet</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- USERS TABLE -->
+    <div class="admin-section">
+        <h2>👥 Users</h2>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td><strong>{{ user.username }}</strong></td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.is_admin %}
+                            <span class="badge-admin">Admin</span>
+                            {% else %}
+                            <span class="badge-user">User</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<!-- ORDER MANAGEMENT -->
+ 
+<div class="admin-section">
+    <h2>📋 Order Management</h2>
+
+    <!-- Pending -->
+    <div class="admin-section">
+        <h3>⏳ Pending</h3>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in pending_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><strong>{{ order.customer_name }}</strong></td>
+                        <td>{{ order.email }}</td>
+                        <td class="accent">{{ "{:,}".format(order.total_price|int) }} FCFA</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.created_at[:10] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
+                                <select name="status">
+                                    <option value="Pending"   {% if order.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+                                    <option value="Paid"      {% if order.status == 'Paid' %}selected{% endif %}>✅ Paid</option>
+                                    <option value="Shipped"   {% if order.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>📬 Delivered</option>
+                                </select>
+                                <button type="submit" class="btn-primary-sm">Update</button>
+                            </form>
+                        </td>
+                   </tr>
+                    {% endfor %}
+                    {% if not pending_orders %}
+                    <tr><td colspan="6" style="text-align:center;opacity:.5;">No pending orders</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Paid -->
+    <div class="admin-section">
+        <h3>✅ Paid</h3>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>status</th>
+            
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in paid_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><strong>{{ order.customer_name }}</strong></td>
+                        <td>{{ order.email }}</td>
+                        <td class="accent">{{ "{:,}".format(order.total_price|int) }} FCFA</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.created_at[:10] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
+                                <select name="status">
+                                    <option value="Pending"   {% if order.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+                                    <option value="Paid"      {% if order.status == 'Paid' %}selected{% endif %}>✅ Paid</option>
+                                    <option value="Shipped"   {% if order.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>📬 Delivered</option>
+                                </select>
+                                <button type="submit" class="btn-primary-sm">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Shipped -->
+    <div class="admin-section">
+        <h3>🚚 Shipped</h3>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in shipped_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><strong>{{ order.customer_name }}</strong></td>
+                        <td>{{ order.email }}</td>
+                        <td class="accent">{{ "{:,}".format(order.total_price|int) }} FCFA</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.created_at[:10] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
+                                <select name="status">
+                                    <option value="Pending"   {% if order.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+                                    <option value="Paid"      {% if order.status == 'Paid' %}selected{% endif %}>✅ Paid</option>
+                                    <option value="Shipped"   {% if order.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>📬 Delivered</option>
+                                </select>
+                                <button type="submit" class="btn-primary-sm">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+    <!-- Delivered -->
+    <div class="admin-section">
+        <h3>📬 Delivered</h3>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in delivered_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><strong>{{ order.customer_name }}</strong></td>
+                        <td>{{ order.email }}</td>
+                        <td class="accent">{{ "{:,}".format(order.total_price|int) }} FCFA</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.created_at[:10] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
+                                <select name="status">
+                                    <option value="Pending"   {% if order.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+                                    <option value="Paid"      {% if order.status == 'Paid' %}selected{% endif %}>✅ Paid</option>
+                                    <option value="Shipped"   {% if order.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>📬 Delivered</option>
+                                </select>
+                                <button type="submit" class="btn-primary-sm">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <!-- MESSAGES TABLE -->
+    <div class="admin-section">
+        <h2>✉️ Contact Messages</h2>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in messages %}
+                    <tr>
+                        <td><strong>{{ msg.name }}</strong></td>
+                        <td>{{ msg.email }}</td>
+                        <td>{{ msg.message }}</td>
+                        <td>{{ msg.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not messages %}
+                    <tr><td colspan="4" style="text-align:center;opacity:.5;">No messages yet</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+{% endblock %}
