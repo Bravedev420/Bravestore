@@ -473,6 +473,10 @@ def not_found(e):
 def forbidden(e):
     return render_template("403.html"), 403
 
+# Initialize database on startup
+with app.app_context():
+    init_db()
+    seed_products()
 
 # ------------------------------
 # Run App
