@@ -368,6 +368,20 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if len(password) < 8:
+            flash("Password must be at least 8 characters.", "error")
+            return redirect(url_for("register"))
+
+        if password != confirm_password:
+            flash("Passwords do not match.", "error")
+            return redirect(url_for("register"))
+
+        if "@" not in email or "." not in email:
+            flash("Please enter a valid email address.", "error")
+            return redirect(url_for("register"))
+
         hashed = generate_password_hash(password, method='pbkdf2:sha256')
         db = get_db()
         try:
@@ -381,6 +395,7 @@ def register():
             db.rollback()
             flash("Username or email already exists.", "error")
     return render_template("register.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
