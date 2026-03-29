@@ -177,7 +177,7 @@
                         <td><strong>{{ order.customer_name }}</strong></td>
                         <td>{{ order.email }}</td>
                         <td>{{ order.phone }}</td>
-                        <td class="accent">{{ "{:,}".format(order.amount|int) }} FCFA</td>
+                        <td class="accent">{{ "{:,}".format(order.total_price|int) }} FCFA</td>
                         <td>
                             {% if order.payment_method == 'mtn' %}📱 MTN
                             {% elif order.payment_method == 'orange' %}🟠 Orange
