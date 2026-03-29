@@ -1148,8 +1148,14 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 700px) {
-    .navbar { flex-wrap: wrap; gap: 10px; }
-    .nav-links { display: none; }
+    .navbar { flex-wrap: nowrap; gap: 8px; padding: 12px 4%; }
+.nav-links { display: none; }
+.nav-brand { font-size: 1.1rem; }
+.nav-actions { gap: 6px; flex-shrink: 0; }
+.btn-outline-sm { padding: 6px 10px; font-size: 0.78rem; }
+.btn-primary-sm { padding: 6px 10px; font-size: 0.78rem; }
+.cart-btn { padding: 6px 10px; font-size: 0.78rem; }
+.nav-username { display: none; }
     .stats-bar { flex-wrap: wrap; }
     .stat { min-width: 45%; }
     .cart-row { flex-wrap: wrap; }
